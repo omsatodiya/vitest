@@ -196,7 +196,8 @@ export function replaceInlineSnap(
     return true
   }
 
-  const quoteEndRE = new RegExp(`(?:^|[^\\\\])${quote}`)
+  // the closing quote is the first one preceded by an even number of backslashes
+  const quoteEndRE = new RegExp(`(?:^|[^\\\\])(?:\\\\\\\\)*${quote}`)
   const endMatch = quoteEndRE.exec(code.slice(startIndex))
   if (!endMatch) {
     return false

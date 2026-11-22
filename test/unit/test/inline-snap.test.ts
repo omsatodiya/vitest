@@ -46,6 +46,22 @@ ${indent}}\`)
     `)
   })
 
+  it.each([
+    ['ends with an escaped backslash', '`C:\\\\`'],
+    ['ends with two escaped backslashes', '`C:\\\\\\\\`'],
+    ['ends with an escaped backslash and an escaped backtick', '`C:\\\\\\``'],
+  ])('replaceInlineSnap when the snapshot %s', (_, snapshot) => {
+    const code = [
+      `expect(value).toMatchInlineSnapshot(${snapshot})`,
+      'test(`second`, () => {})',
+    ].join('\n')
+    const s = new MagicString(code)
+    replaceInlineSnap(code, s, 0, 'C:\\Users')
+    expect(s.toString()).toBe(
+      ['expect(value).toMatchInlineSnapshot(`C:\\\\Users`)', 'test(`second`, () => {})'].join('\n'),
+    )
+  })
+
   it('replaceInlineSnap(string) with block comment(in same line)', async () => {
     const code = `
   expect('foo').toMatchInlineSnapshot(/* comment1 */'"foo"')
